@@ -4,7 +4,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Navbar } from "./app/Navbar";
 import { PostsList } from "./features/posts/postsList";
 import "./App.css";
-import { AddPostForm } from "./features/posts/addPostForm";
+import { AddPostForm } from "./features/posts/AddPostForm";
 import { SinglePostPage } from "./features/posts/SinglePostPage";
 import { EditPostForm } from "./features/posts/EditPostForm";
 
