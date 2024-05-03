@@ -2,7 +2,7 @@ import React from "react";
 
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Navbar } from "./app/Navbar";
-import { PostsList } from "./features/posts/postsList";
+import { PostsList } from "./features/posts/PostsList";
 import "./App.css";
 import { AddPostForm } from "./features/posts/AddPostForm";
 import { SinglePostPage } from "./features/posts/SinglePostPage";

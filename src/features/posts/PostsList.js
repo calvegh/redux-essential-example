@@ -6,7 +6,7 @@ import { TimeAgo } from "./TimeAgo";
 import { ReactionsButtons } from "./ReactionsButtons";
 import { fetchPosts, selectAllPosts } from "./postsSlice";
 import { Spinner } from "../../components/Spinner";
-const PostExcerpt = ({ post }) => {
+let PostExcerpt = ({ post }) => {
   return (
     <article className="post-excerpt">
       <h3>{post.title}</h3>
@@ -23,6 +23,7 @@ const PostExcerpt = ({ post }) => {
     </article>
   )
 }
+PostExcerpt = React.memo(PostExcerpt)
 
 export const PostsList = () => {
   const dispatch = useDispatch()
