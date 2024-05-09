@@ -1,16 +1,14 @@
-import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import { Link } from "react-router-dom";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionsButtons } from "./ReactionsButtons";
-import { fetchPosts, selectPostById, selectPostIds } from "./postsSlice";
 import { Spinner } from "../../components/Spinner";
+import { useGetPostsQuery } from "../api/apiSlice";
 
-let PostExcerpt = ({ postId }) => {
-  const post = useSelector(state => selectPostById(state, postId))
+let PostExcerpt = ({ post }) => {
   return (
-    <article className="post-excerpt">
+    <article className="post-excerpt" key={post.id}>
       <h3>{post.title}</h3>
       <div>
         <PostAuthor userId={post.user} />
@@ -23,39 +21,27 @@ let PostExcerpt = ({ postId }) => {
         View Post
       </Link>
     </article>
-  )
-}
-PostExcerpt = React.memo(PostExcerpt)
+  );
+};
+PostExcerpt = React.memo(PostExcerpt);
 
 export const PostsList = () => {
-  const dispatch = useDispatch()
-  const orderedPostIds = useSelector(selectPostIds)
+  const {
+    data: posts,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetPostsQuery();
 
-  const postStatus = useSelector(state => state.posts.status)
-  const error = useSelector(state => state.posts.error)
-  const initialized = useRef(false)
-  useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true
-      if (postStatus === 'idle') {
-        dispatch(fetchPosts())
-      }
-    }
+  let content;
 
-  }, [postStatus, dispatch])
-
-  let content
-
-  if (postStatus === 'loading') {
-    content = <Spinner text="Loading..." />
-  } else if (postStatus === 'succeeded') {
-
-
-    content = orderedPostIds.map(postId => (
-      <PostExcerpt key={postId} postId={postId} />
-    ))
-  } else if (postStatus === 'failed') {
-    content = <div>{error}</div>
+  if (isLoading) {
+    content = <Spinner text="Loading..." />;
+  } else if (isSuccess) {
+    content = posts.map((post) => <PostExcerpt key={post.id} post={post} />);
+  } else if (isError) {
+    content = <div>{error}</div>;
   }
 
   return (
@@ -63,5 +49,5 @@ export const PostsList = () => {
       <h2>Posts</h2>
       {content}
     </section>
-  )
-}
+  );
+};
