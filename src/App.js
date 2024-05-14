@@ -21,8 +21,8 @@ function App() {
             path="/"
             element={
               <>
-                <PostsList />
                 <AddPostForm />
+                <PostsList />
               </>
             }
           />

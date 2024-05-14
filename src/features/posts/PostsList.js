@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionsButtons } from "./ReactionsButtons";
 import { Spinner } from "../../components/Spinner";
 import { useGetPostsQuery } from "../api/apiSlice";
+import classNames from "classnames";
 
 let PostExcerpt = ({ post }) => {
   return (
@@ -27,26 +28,41 @@ PostExcerpt = React.memo(PostExcerpt);
 
 export const PostsList = () => {
   const {
-    data: posts,
+    data: posts = [],
     isLoading,
+    isFetching,
     isSuccess,
     isError,
     error,
+    refetch,
   } = useGetPostsQuery();
+
+  const sortedPosts = useMemo(() => {
+    const sortedPosts = posts.slice();
+    sortedPosts.sort((a, b) => b.date.localeCompare(a.date));
+    return sortedPosts;
+  }, [posts]);
 
   let content;
 
   if (isLoading) {
     content = <Spinner text="Loading..." />;
   } else if (isSuccess) {
-    content = posts.map((post) => <PostExcerpt key={post.id} post={post} />);
+    const renderedPost = sortedPosts.map((post) => (
+      <PostExcerpt key={post.id} post={post} />
+    ));
+    const containerClassnames = classNames("post-container", {
+      disabled: isFetching,
+    });
+    content = <div className={containerClassnames}>{renderedPost}</div>;
   } else if (isError) {
-    content = <div>{error}</div>;
+    content = <div>{error.toString()}</div>;
   }
 
   return (
     <section className="posts-list">
       <h2>Posts</h2>
+      <button onClick={refetch}>Refecth Post</button>
       {content}
     </section>
   );
